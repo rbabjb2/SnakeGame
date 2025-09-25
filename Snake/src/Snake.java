@@ -15,8 +15,8 @@ public class Snake implements KeyListener {
     int[][] map = new int[gridSize][gridSize];
     JFrame frame = new JFrame("Snake");
     JPanel panel = new JPanel();
-    ImageIcon[] icons = new ImageIcon[] { new ImageIcon("icons/0.png"), new ImageIcon("icons/1.png"),
-            new ImageIcon("icons/2.png"), new ImageIcon("icons/3.png") };
+    ImageIcon[] icons = new ImageIcon[] { new ImageIcon("src/icons/0.png"), new ImageIcon("src/icons/1.png"),
+            new ImageIcon("src/icons/1.png"), new ImageIcon("src/icons/3.png") };
     GridLayout grid = new GridLayout();
     LinkedList<Part> snake = new LinkedList<Part>();
     JLabel[][] labels = new JLabel[gridSize][gridSize];
@@ -35,7 +35,7 @@ public class Snake implements KeyListener {
         frame.setSize(500, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.addKeyListener(this);
-        //frame.setResizable(false);
+        // frame.setResizable(false);
         frame.setVisible(true);
 
         for (int i = 0; i < icons.length; i++) {
@@ -72,27 +72,38 @@ public class Snake implements KeyListener {
         panel.revalidate();
         panel.repaint();
         while (true) {
-            snake.removeLast();
-            
-            if (snake.getFirst().x == appleX && snake.getFirst().y == appleY) {
-                System.out.println("Ate the apple");
-                isConsumed = true;
-            }
-
-            if (dir == 0) {
-                snake.addFirst(new Part(snake.getFirst().x, snake.getFirst().y - 1));
-            } else if (dir == 1) {
-                snake.addFirst(new Part(snake.getFirst().x + 1, snake.getFirst().y));
-            } else if (dir == 2) {
-                snake.addFirst(new Part(snake.getFirst().x, snake.getFirst().y + 1));
-            } else if (dir == 3) {
-                snake.addFirst(new Part(snake.getFirst().x - 1, snake.getFirst().y));
-            } else {
-                System.out.println("dir is not 0,1,2 or 3");
-            }
-
-            updateScreen(snake.getFirst(), 0);
             try {
+
+                if (snake.getFirst().x == appleX && snake.getFirst().y == appleY) {
+                    System.out.println("Ate the apple");
+                    isConsumed = true;
+                } else {
+                    snake.removeLast();
+                }
+
+                if (dir == 0) {
+                    snake.addFirst(new Part(snake.getFirst().x, snake.getFirst().y - 1));
+                } else if (dir == 1) {
+                    snake.addFirst(new Part(snake.getFirst().x + 1, snake.getFirst().y));
+                } else if (dir == 2) {
+                    snake.addFirst(new Part(snake.getFirst().x, snake.getFirst().y + 1));
+                } else if (dir == 3) {
+                    snake.addFirst(new Part(snake.getFirst().x - 1, snake.getFirst().y));
+                } else {
+                    System.out.println("dir is not 0,1,2 or 3");
+                }
+
+                for (Part i : snake) {
+                    if (snake.getFirst() != i && snake.getFirst().x == i.x && snake.getFirst().y == i.y) {
+                        System.exit(0);
+                    }
+                }
+                if (snake.getFirst().x < 0 || snake.getFirst().y < 0 || snake.getFirst().x >= 16 || snake.getFirst().y >= 16) {
+                    System.exit(0);
+                }
+
+                updateScreen(snake.getFirst(), 0);
+
                 Thread.sleep(500);
             } catch (Exception e) {
             }
@@ -172,9 +183,9 @@ public class Snake implements KeyListener {
                 for (int j = 0; j < gridSize; j++) {
 
                     if (j == appleX && i == appleY) {
-                        map[i][j] = 3;
+                        map[j][i] = 3;
                     } else {
-                        map[i][j] = 0;
+                        map[j][i] = 0;
                     }
                 }
             }
